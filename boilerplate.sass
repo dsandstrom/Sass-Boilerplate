@@ -11,7 +11,7 @@
 // = CSS Reset =
 // =============
 
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, tt, var, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, tt, var, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tfoot, thead, tbody, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video
   margin: 0
   padding: 0
   border: 0
@@ -27,6 +27,11 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section
   display: block
 
+
+// ReCaptcha Iframe FIX
+// http://stackoverflow.com/questions/8155645/recaptcha-creates-iframe-on-page-breaks-styling
+iframe[src="about:blank"]
+  display: none
 
 // ==================
 // = General Styles =
@@ -44,6 +49,11 @@ body
   font-family: helvetica, arial, verdana, sans-serif
   text-rendering: optimizeLegibility // enable better kerning and ligatures for Webkit. FF has this enabled by default for fonts >= 20px. IE does not support this
 
+// Tables - borders don't stack up and no spacing inbetween columns
+table
+  border-collapse: collapse
+  border-spacing: 0
+
 // Stack your boxes easily with this
 =floatClear
   float: left
@@ -53,22 +63,49 @@ body
 // Do you hate borders on your images and image links? Because I do.
 img
   border: 0
+  vertical-align: middle
+  -ms-interpolation-mode: bicubic
 
 // Wow! You also don't like bullets? Great to meet you.
 ul
   list-style-type: none
 
-// clearfix
-=clearfix
-  zoom: 1
-  
-  &:after
-    content: "."
-    display: block
-    height: 0
-    clear: both
-    visibility: hidden
+// iframe
+//   display:none
 
+// clearfix
+// =clearfix
+ // zoom: 1
+
+ // &:after
+   // content: "."
+   // display: block
+   // height: 0
+   // clear: both
+   // visibility: hidden
+
+//A clearing hack swiped from the compass project
+//(http://compass-style.org)
+=clearfix
+  overflow: auto
+  overflow: -moz-scrollbars-none
+  // This makes ie6 get layout
+  display: inline-block
+  // and this puts it back to block
+  &
+    display: block
+
+=clear
+  *zoom: 1
+  overflow: hidden
+
+=clear_with_overflow
+  *zoom: 1
+  overflow: visible
+  &:after
+    content: ""
+    display: block
+    clear: both
 
 // ================
 // = CSS3 Helpers =
@@ -140,24 +177,24 @@ ul
 // </div>
 
 // set the width of your body column
-$contentWidth: 960px
+// $contentWidth: 960px
 
-html
-  width: 100%
-  height: 100%
-  min-width: $contentWidth // set so that browsers resized smaller do not change column content
+// html
+//   width: 100%
+//   height: 100%
+//   min-width: $contentWidth // set so that browsers resized smaller do not change column content
 
-body
-  position: relative // to enable correct absolute positioning
+// body
+//   position: relative // to enable correct absolute positioning
 
-.wrapOut
-  width: 100%
-  +floatClear
-  min-width: $contentWidth
+// .wrapOut
+//   width: 100%
+//   +floatClear
+//   min-width: $contentWidth
 
-.wrapIn
-  width: $contentWidth
-  margin: 0 auto
+// .wrapIn
+//   width: $contentWidth
+//   margin: 0 auto
 
 
 // ======================================================
@@ -173,14 +210,14 @@ body
 // far off to the right depending on the width of the object being centered. I usually set
 // .outer's parent to overflow: hidden to make sure this doesn't affect the layout.
 
-.outer
-  +floatClear
-  position: relative
-  left: 50%
+// .outer
+//   +floatClear
+//   position: relative
+//   left: 50%
 
-.inner
-  position: relative
-  left: -50%
+// .inner
+//   position: relative
+//   left: -50%
 
 
 // =========================
@@ -244,3 +281,221 @@ $borderColor:  darken($buttonColor, 50%)
   background: -webkit-gradient(linear, left top, left bottom, from($cta_active_start), color-stop(0.46, $cta_active_start), color-stop(0.54, $cta_active_end), to($cta_active_end)) // Safari 4+, Chrome
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$cta_active_start}', endColorstr='#{$cta_active_end}') // IE6 & 7
   -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$cta_active_start}', endColorstr='#{$cta_active_end}') // IE8
+
+// ==========
+// = Shapes =
+// ==========
+
+=arrow_up($color:black, $first:20px, $second:$first, $third:$first)
+  width:  0 
+  height: 0 
+  border-color: transparent
+  border-right:   $first solid transparent
+  border-bottom:  $second solid $color
+  border-left:    $third solid transparent
+
+=arrow_down($color:black, $first:20px, $second:$first, $third:$first)
+  width:  0 
+  height: 0 
+  border-top:   $first solid $color
+  border-right: $second solid transparent
+  border-left:  $third solid transparent
+
+=arrow_right($color:black, $first:20px, $second:$first, $third:$first)
+  width:  0 
+  height: 0 
+  // border-top:     $first solid transparent
+  // border-bottom:  $second solid transparent
+  // border-left:    $third solid $color
+  border-top:     $first solid transparent
+  border-bottom:  $second solid transparent
+  border-right:   $third solid $color
+  -moz-transform: rotate(180deg)
+  -o-transform: rotate(180deg)
+  -webkit-transform: rotate(180deg)
+  transform: rotate(180deg)
+
+=arrow_left($color:black, $first:20px, $second:$first, $third:$first)
+  width:  0 
+  height: 0 
+  // extra lines in ff
+  // border-top:     $first solid transparent
+  // border-right:   $second solid $color 
+  // border-bottom:  $third solid transparent 
+  border-top:     $first solid transparent
+  border-left:    $second solid $color
+  border-bottom:  $third solid transparent
+  -moz-transform: rotate(180deg)
+  -o-transform: rotate(180deg)
+  -webkit-transform: rotate(180deg)
+  transform: rotate(180deg)
+
+// ==========
+// = Other =
+// ==========
+
+=box_sizing
+  -webkit-box-sizing: border-box
+  -moz-box-sizing: border-box
+  -ms-box-sizing: border-box
+  box-sizing: border-box
+
+=opacity($percent: 50)
+  $decimal: $percent / 100
+  -moz-opacity: $decimal
+  opacity: $decimal
+  // ie
+  *zoom: 1
+  filter: alpha(opacity = $percent)
+
+// ============
+// = IE Fixes =
+// ============
+=transparent_background_color($red:255, $green:255, $blue:255, $alpha:0.5)
+  background-color: rgb($red, $green, $blue)
+  background-color: rgba($red, $green, $blue, $alpha)
+
+=min_height($size:200px)
+  min-height: $size
+  height:auto !important
+  height:     $size
+
+=min_width($size:800px)
+  min-width:  $size
+  width:      auto !important
+  width:      $size
+
+//Fixes the Doubled Float-Margin bug.
+//Details: www.positioniseverything.net/explorer/doubled-margin.html
+=double_float_margin_fix
+  display:  inline
+  float:    left
+
+//Fixes the Peekaboo bug.
+//Details: http://www.positioniseverything.net/explorer/peekaboo.html
+=peekaboo_fix 
+  _display: inline-block
+
+// =========
+// = Lists =
+// =========
+
+=flat_list($spacing: 1em)
+  margin: 0
+  padding: 0
+  list-style: none
+  li
+    list-style: none
+    margin: 0
+    // margin-right: $spacing
+    padding: 0
+    // padding: 0 $spacing
+    float: left
+    // border-right: $border
+    // &:first-child
+    //   border-left: $border
+    &:last-child
+      // border-width: 0
+      margin-right: 0
+    ul li 
+      // reset submenu
+      margin: 0
+      border-width: 0
+    a
+      float: left
+      padding: 0 $spacing
+
+=flat_list_with_divider($spacing: 0.5em, $divider: "|")
+  margin: 0
+  padding: 0
+  list-style: none
+  li
+    list-style: none
+    margin: 0
+    margin-right: $spacing
+    padding: 0
+    float: left
+    &:after
+      margin: 0
+      padding: 0
+      margin-left: $spacing
+      content: $divider
+    &.first_child, &.lastChild, &:last-child
+      // margin: 0
+      // padding: 0
+      margin-right: 0
+      &:after
+        content: ""
+        margin-left: 0
+    ul li 
+      // reset submenu
+      margin: 0
+      border-width: 0
+
+=flat_list_with_border($spacing: 1em, $border: 1px solid gray)
+  margin: 0
+  padding: 0
+  list-style: none
+  li
+    list-style: none
+    margin: 0
+    margin-right: $spacing
+    padding: 0
+    float: left
+    border-right: $border
+    &:first-child
+      border-left: $border
+    &:last-child
+      // border-width: 0
+      margin-right: 0
+    ul li
+      // reset submenu
+      margin: 0
+      border-width: 0
+    a
+      float: left
+
+
+// ===========
+// = Shadows =
+// ===========
+
+=shadow_none
+  -webkit-box-shadow: none
+  -moz-box-shadow: none
+  box-shadow: none
+
+=shadow($horz:0, $vert:3px, $blur:3px, $spread:0, $color:rgba(0,0,0,0.5))
+  -webkit-box-shadow: $horz $vert $blur $spread $color
+  -moz-box-shadow: $horz $vert $blur $spread $color
+  box-shadow: $horz $vert $blur $spread $color
+
+=shadow_sides($horz:3px, $vert:-2px, $blur:3px, $spread:-1px, $color:rgba(0,0,0,0.5))
+  -webkit-box-shadow: $horz $vert $blur $spread $color, -$horz $vert $blur $spread $color
+  -moz-box-shadow: $horz $vert $blur $spread $color, -$horz $vert $blur $spread $color
+  box-shadow: $horz $vert $blur $spread $color, -$horz $vert $blur $spread $color
+
+=shadow_inset($horz:3px, $vert:3px, $blur:3px, $spread:0, $color:rgba(0,0,0,0.5))
+  -webkit-box-shadow: $horz $vert $blur $spread $color inset
+  -moz-box-shadow: $horz $vert $blur $spread $color inset
+  box-shadow: $horz $vert $blur $spread $color inset
+
+=shadow_inset_sides($horz:3px, $vert:3px, $blur:3px, $spread:0, $color:rgba(0,0,0,0.5))
+  -webkit-box-shadow: $horz $vert $blur $spread $color inset, -$horz $vert $blur -$spread $color inset
+  -moz-box-shadow: $horz $vert $blur $spread $color inset, -$horz $vert $blur -$spread $color inset
+  box-shadow: $horz $vert $blur $spread $color inset, -$horz $vert $blur -$spread $color inset
+
+// =========
+// = Rails =
+// =========
+
+.debug_dump
+  display: block
+  // clear: both
+  // float: left
+  // width: 100%
+  // margin: 10px
+  padding: 10px
+  background: #ddd
+  border: #bbb 1px solid
+  @include box_sizing
